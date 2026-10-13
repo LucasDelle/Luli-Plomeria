@@ -57,4 +57,39 @@
   var year = document.getElementById('year');
   if (year) year.textContent = new Date().getFullYear();
 
+  /* ==========================================================
+     4. CONVERSIONES DE GOOGLE ADS
+     Delegación de clicks: cualquier <a> a wa.me o a tel: cuenta
+     como conversión. No hay formularios en el sitio, así que esos
+     dos son los únicos contactos reales.
+
+     Los IDs se definen en el <head> (window.ADS_CONVERSIONS).
+     Si gtag no cargó (adblock, sin conexión), el click sigue
+     funcionando igual: nunca bloqueamos la navegación.
+     ========================================================== */
+  function conversionDe(href) {
+    if (!href) return null;
+    if (href.indexOf('wa.me') > -1 || href.indexOf('api.whatsapp.com') > -1) return 'whatsapp';
+    if (href.indexOf('tel:') === 0) return 'llamada';
+    return null;
+  }
+
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest ? e.target.closest('a[href]') : null;
+    if (!link) return;
+
+    var tipo = conversionDe(link.getAttribute('href'));
+    if (!tipo) return;
+
+    var mapa = window.ADS_CONVERSIONS || {};
+    var sendTo = mapa[tipo];
+
+    if (typeof window.gtag !== 'function' || !sendTo || sendTo.indexOf('PEGAR_') > -1) return;
+
+    window.gtag('event', 'conversion', {
+      send_to: sendTo,
+      event_callback: function () {}
+    });
+  }, true);
+
 })();

@@ -6,8 +6,21 @@
 
 <!-- Redirección del dominio raíz a la página de plomería.
      Lo ideal es hacerla en el hosting como 301 (ver README / nota).
-     Este meta refresh es el respaldo para cuando eso no se puede tocar. -->
-<meta http-equiv="refresh" content="0; url=plomeria.html">
+
+     OJO con Google Ads: si el anuncio apunta al dominio raíz, la URL
+     trae ?gclid=... y ese parámetro TIENE que viajar a plomeria.html,
+     si no la conversión no se atribuye a la campaña. Por eso redirige
+     el script de acá abajo, que reenvía el query string y el hash.
+     El meta refresh queda solo como respaldo sin JS: ese sí pierde el
+     gclid, pero es mejor que dejar al visitante varado. -->
+<script>
+  // replace() en vez de href: no deja el index en el historial,
+  // así el botón "atrás" del celular no rebota en un loop.
+  location.replace('plomeria.html' + location.search + location.hash);
+</script>
+<noscript>
+  <meta http-equiv="refresh" content="0; url=plomeria.html">
+</noscript>
 
 <title>Rodolfo — Plomero y Gasista Matriculado en CABA</title>
 <meta name="description" content="Plomero y gasista matriculado en CABA. Destapaciones, filtraciones, calderas, calefones y termotanques. Presupuestos sin cargo.">
@@ -38,13 +51,14 @@
   <main>
     <img src="images/logo.jpg" alt="Rodolfo — Plomero y Gasista Matriculado">
     <p>Te estamos llevando a la página de plomería…</p>
-    <a href="plomeria.html">Entrar ahora</a>
+    <a id="entrar" href="plomeria.html">Entrar ahora</a>
   </main>
 
   <script>
-    // replace() en vez de href: no deja el index en el historial,
-    // así el botón "atrás" del celular no rebota en un loop.
-    location.replace('plomeria.html');
+    // Si el JS del <head> no llegó a correr, al menos que el botón
+    // manual se lleve el gclid puesto.
+    var entrar = document.getElementById('entrar');
+    if (entrar) entrar.href = 'plomeria.html' + location.search + location.hash;
   </script>
 </body>
 </html>

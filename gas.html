@@ -2,6 +2,27 @@
 <html lang="es-AR">
 <head>
 <meta charset="UTF-8">
+
+<!-- ============================================================
+     Google Ads — etiqueta global (gtag.js)
+     Reemplazá AW-XXXXXXXXXX por tu ID de conversión de Google Ads.
+     Va lo más arriba posible del <head> para no perder el gclid.
+     ============================================================ -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-XXXXXXXXXX');
+
+  /* Etiquetas de conversión. Cada una la creás en Google Ads
+     (Objetivos > Conversiones > Acción manual) y te da un valor
+     "send_to" con la forma AW-XXXXXXXXXX/AbC-D_efGhIjKlMn.  */
+  window.ADS_CONVERSIONS = {
+    whatsapp: 'AW-XXXXXXXXXX/PEGAR_LABEL_WHATSAPP',
+    llamada:  'AW-XXXXXXXXXX/PEGAR_LABEL_LLAMADA'
+  };
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 <title>Rodolfo — Gasista Matriculado en CABA</title>
