@@ -3,9 +3,14 @@
 Instrucciones para quien administra la cuenta de Google Ads de
 **Rodolfo — Plomero y Gasista Matriculado (CABA)**.
 
-El sitio ya tiene el código de medición instalado y subido. Falta
-**completar los IDs de la cuenta**: hasta que eso pase, el código está
-inactivo a propósito y no envía nada.
+**Estado:** el código está instalado y **ya tiene cargado el ID
+`AW-18449350229`** y la etiqueta que enviaron. Funciona apenas se
+publique el sitio con estos cambios.
+
+**Pendiente del lado de Ads:** la acción que crearon es de tipo
+*"Vista de página"*. Hay que ajustarla (sección 3). Si no, el nombre y
+la categoría en los informes no van a coincidir con lo que realmente
+se mide.
 
 ---
 
@@ -18,7 +23,10 @@ El sitio no tiene formularios. Los únicos contactos reales son:
 | **Click WhatsApp** | Click en cualquier botón o link que abra WhatsApp (botón flotante, nav, hero, cierre, footer) |
 | **Click llamada** | Click en cualquier link `tel:` (botón "Llamar" y el número escrito) |
 
-Las dos están cableadas en las dos landings: `plomeria.html` y `gas.html`.
+Las dos están cableadas en las dos landings: `plomeria.html` y
+`gas.html`. **Hoy ambas reportan a la misma acción de conversión**, así
+que en los informes se ven sumadas; para separarlas, ver la Opción B de
+la sección 3.
 
 > **Importante:** se mide el *click*, no si la persona efectivamente
 > escribió o habló. Es lo máximo medible sin la API de WhatsApp Business,
@@ -27,55 +35,76 @@ Las dos están cableadas en las dos landings: `plomeria.html` y `gas.html`.
 
 ---
 
-## 2. Crear las acciones de conversión
+## 2. Por qué "no funcionaba"
 
-En Google Ads: **Objetivos → Conversiones → Acciones de conversión →
-Nueva acción de conversión → Sitio web**. Cuando pida verificar el
-dominio, elegí **"Agregar una acción de conversión manualmente"**.
+Dos motivos, los dos ya resueltos o identificados:
 
-Creá **dos**, con esta configuración:
-
-**A) Click WhatsApp**
-- Categoría: `Contacto`
-- Valor: *No usar un valor* (o un valor fijo si querés estimar ticket)
-- Recuento: **Una** (una consulta por persona, no por cuántas veces clickea)
-- Ventana de conversión: 30 días
-- Incluir en "Conversiones": **Sí** (es la que debe optimizar la campaña)
-
-**B) Click llamada**
-- Igual que la anterior, categoría `Llamada telefónica`.
-
-Al terminar, en cada una entrá a **"Etiqueta de conversión"** y copiá
-los dos datos que da el snippet:
-
-```
-gtag('event', 'conversion', {'send_to': 'AW-123456789/AbC-D_efGhIjKlMn'});
-                                         └─ ID ──┘ └──── etiqueta ────┘
-```
-
-Necesitás **1 ID de conversión** (el mismo para toda la cuenta) y
-**2 etiquetas** (una por acción).
+1. **El código tenía los IDs sin completar.** Estaba puesto a propósito
+   con valores de relleno (`AW-XXXXXXXXXX`) y escrito para no enviar
+   nada hasta tenerlos. Ya se cargó el ID real y la etiqueta.
+2. **Los cambios tienen que estar publicados.** Mientras el sitio en
+   `rodolfoplomeria.com.ar` no tenga esta versión subida, cualquier
+   verificación desde Google Ads va a decir que no encuentra la
+   etiqueta. **Verificar recién después de publicar.**
 
 ---
 
-## 3. Pasarle los datos a quien toca el código
+## 3. Lo que falta ajustar en Google Ads
 
-Mandale estos tres valores:
+La acción que se compartió (`7kO2CIuM6ZsdENX8qt1E`) se creó como
+**"Vista de página"**. Técnicamente la etiqueta sirve igual — es un
+snippet manual y nosotros la disparamos en los clicks de contacto, no
+al cargar la página — pero conviene corregir la configuración para que
+los informes digan la verdad.
 
-- **ID de conversión:** `AW-__________`
-- **Etiqueta Click WhatsApp:** `__________`
-- **Etiqueta Click llamada:** `__________`
+### Opción A (mínima, 2 minutos)
 
-En el código hay que reemplazar, en el `<head>` de **`plomeria.html` y
-`gas.html`** (mismos valores en los dos archivos):
+Entrar a **Objetivos → Conversiones → esa acción → Editar
+configuración** y dejarla así:
 
-- `AW-XXXXXXXXXX` → el ID real. Buscar y reemplazar todas las
-  ocurrencias del archivo: son 6 (4 en código y 2 en comentarios).
-- `PEGAR_LABEL_WHATSAPP` → la etiqueta de Click WhatsApp.
-- `PEGAR_LABEL_LLAMADA` → la etiqueta de Click llamada.
+| Campo | Valor |
+|---|---|
+| Nombre | `Contacto (WhatsApp o llamada)` |
+| Categoría | `Contacto` |
+| Valor | *No usar un valor* (hoy manda 1,00 ARS, que no significa nada) |
+| Recuento | **Una** — si no, una misma persona que toca WhatsApp y después "Llamar" cuenta dos |
+| Ventana de conversión | 30 días |
+| Incluir en "Conversiones" | **Sí** |
 
-Nada más. La lógica de los clicks ya está en `script.js` y no hay que
-tocarla.
+Renombrar y cambiar la categoría **no cambia la etiqueta**, así que no
+hay que volver a tocar el código.
+
+### Opción B (recomendada) — separar WhatsApp de llamada
+
+Mismo ajuste que arriba, y además crear una **segunda** acción para
+poder ver cuál de los dos canales rinde más:
+
+1. **Objetivos → Conversiones → Nueva acción de conversión → Sitio
+   web**, y elegir **"Agregar una acción de conversión manualmente"**
+   (no hace falta verificar el dominio).
+2. Nombre `Click llamada`, categoría `Llamada telefónica`, resto igual
+   a la tabla de arriba.
+3. Copiar su etiqueta y mandarla a quien toca el código:
+
+   ```
+   gtag('event', 'conversion', {'send_to': 'AW-18449350229/AbC-D_efGhIjKlMn'});
+                                            └─── ID ──┘ └──── etiqueta ────┘
+   ```
+
+El cambio en el código es una línea: en el `<head>` de `plomeria.html`
+y `gas.html`, reemplazar el valor de `llamada:` dentro de
+`window.ADS_CONVERSIONS` por la etiqueta nueva. Hoy las dos entradas
+apuntan a la misma a propósito.
+
+> **No hace falta** pegar ningún "fragmento de evento" en el `<head>`
+> como dice el instructivo genérico de Google. Ese fragmento dispara la
+> conversión **al cargar la página**, o sea contaría como contacto a
+> cualquiera que simplemente entre al sitio, y arruinaría la
+> optimización de las campañas. En este sitio la conversión se dispara
+> por click, que es lo que ya está programado.
+>
+> Tampoco aplica nada de la sección **AMP** de ese instructivo: el sitio
+> no usa AMP.
 
 ---
 
@@ -102,18 +131,30 @@ tocar nada: puede romper la atribución.
 
 ## 5. Verificar que quedó andando
 
-1. Instalá la extensión **Google Tag Assistant** en Chrome.
-2. Abrí `plomeria.html` con la extensión activa.
-3. Clickeá el botón de WhatsApp y después el de llamar.
-4. En Tag Assistant tenés que ver, por cada click, un evento
-   `conversion` con el `send_to` correspondiente.
-5. En Google Ads, el estado de cada acción pasa de **"Sin actividad
-   reciente"** a **"Registrando conversiones"** en un plazo de hasta 24 h
-   (a veces 3 h).
+**Primero publicar el sitio.** Hasta que estos cambios estén subidos a
+`rodolfoplomeria.com.ar`, la etiqueta no existe en la web y cualquier
+verificación va a fallar.
 
-Si Tag Assistant no muestra nada: lo más probable es que los
-placeholders (`AW-XXXXXXXXXX`, `PEGAR_...`) sigan sin reemplazar. El
-código está escrito para no disparar nada mientras eso pase.
+1. Instalar la extensión **Google Tag Assistant** en Chrome.
+2. Abrir `https://rodolfoplomeria.com.ar/plomeria.html` con la extensión
+   activa.
+3. **Al cargar la página no tiene que aparecer ninguna conversión.**
+   Si aparece, algo está mal: significa que se pegó de más el
+   "fragmento de evento" del instructivo genérico.
+4. Clickear el botón de WhatsApp. Ahí sí tiene que aparecer un evento
+   `conversion` con `send_to: AW-18449350229/7kO2CIuM6ZsdENX8qt1E`.
+5. Volver y clickear el botón de llamar: mismo evento.
+6. Repetir en `gas.html`.
+7. En Google Ads, el estado de la acción pasa de **"Sin actividad
+   reciente"** a **"Registrando conversiones"** en hasta 24 h (a veces 3 h).
+
+**Si no aparece nada:**
+
+| Síntoma | Causa probable |
+|---|---|
+| Tag Assistant no detecta ninguna etiqueta | El sitio publicado todavía no tiene los cambios |
+| La etiqueta carga pero el click no dispara nada | Hay un bloqueador de anuncios activo en el navegador — probar en ventana de incógnito sin extensiones |
+| Ads sigue en "Sin actividad reciente" al otro día | Nadie clickeó todavía: la conversión es por click, no por visita |
 
 ---
 

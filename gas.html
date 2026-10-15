@@ -5,22 +5,28 @@
 
 <!-- ============================================================
      Google Ads — etiqueta global (gtag.js)
-     Reemplazá AW-XXXXXXXXXX por tu ID de conversión de Google Ads.
+     Cuenta: rodolfogarraza2@gmail.com · ID AW-18449350229
      Va lo más arriba posible del <head> para no perder el gclid.
      ============================================================ -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-XXXXXXXXXX"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18449350229"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'AW-XXXXXXXXXX');
+  gtag('config', 'AW-18449350229');
 
-  /* Etiquetas de conversión. Cada una la creás en Google Ads
-     (Objetivos > Conversiones > Acción manual) y te da un valor
-     "send_to" con la forma AW-XXXXXXXXXX/AbC-D_efGhIjKlMn.  */
+  /* Etiquetas de conversión (el "send_to" de cada acción de Ads).
+
+     PROVISORIO: hoy las dos apuntan a la misma etiqueta, porque desde
+     Ads mandaron una sola acción, creada como "Vista de página". Acá
+     NO se dispara al cargar la página: la usamos para los clicks de
+     contacto, que es lo único que vale la pena medir en este sitio.
+
+     Cuando en Ads creen las dos acciones separadas (ver GOOGLE-ADS.md),
+     reemplazar cada valor por el suyo y listo. */
   window.ADS_CONVERSIONS = {
-    whatsapp: 'AW-XXXXXXXXXX/PEGAR_LABEL_WHATSAPP',
-    llamada:  'AW-XXXXXXXXXX/PEGAR_LABEL_LLAMADA'
+    whatsapp: 'AW-18449350229/7kO2CIuM6ZsdENX8qt1E',
+    llamada:  'AW-18449350229/7kO2CIuM6ZsdENX8qt1E'
   };
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
