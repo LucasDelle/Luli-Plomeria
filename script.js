@@ -86,8 +86,10 @@
 
     if (typeof window.gtag !== 'function' || !sendTo || sendTo.indexOf('PEGAR_') > -1) return;
 
+    // El mismo evento va a Ads y a Analytics (G-R6LHD6FH12), así el
+    // click también se ve en Analytics como evento "conversion".
     window.gtag('event', 'conversion', {
-      send_to: sendTo,
+      send_to: [sendTo, 'G-R6LHD6FH12'],
       event_callback: function () {}
     });
   }, true);
